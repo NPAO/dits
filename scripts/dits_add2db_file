@@ -1,4 +1,19 @@
 #!/usr/bin/env python
 
 import argparse
-import dits
+from dits import dit_db
+import sqlite3
+import os
+
+parser = argparse.ArgumentParser(description='Add one file to the DB.')
+parser.add_argument('file',
+                   help='file to be ingested into db')
+parser.add_argument('--db',
+                   help='Database filename', default='~/.dits/dit.db3')
+                  
+
+args = parser.parse_args()
+
+with sqlite3.connect(os.path.expanduser(args.db)) as conn:
+	dit_db.ingest_file(args.file, conn)
+	conn.commit()
