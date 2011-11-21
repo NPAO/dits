@@ -19,7 +19,7 @@ except ValueError:
 
 
 setup(name='dits',
-	  description='DIT Software - Pipeline and operation software for the DIT',
+	  description='DIT Software - Pipeline and operation software for the DIT (Arctic)',
 	  author='The DIT collaboration',
       version=version,
       packages=['dits'],
