@@ -1,0 +1,129 @@
+create table OBSERVATIONS(
+	ID integer primary key,
+	OBS_TYPE_ID integer references OBS_TYPES(ID),
+	GEO_LOC_ID integer references GEO_LOCS(ID),
+	FILTER_ID integer references FILTERS(ID),
+	TARGET_ID integer references TARGETS(ID),
+	PROGRAM_ID integer references PROGRAMS(ID),
+	OBSERVER_ID integer references OBSERVERS(ID),
+	FLIP bool,
+	NAXIS1 integer,
+	NAXIS2 integer,
+	SUBFX integer,
+	SUBFY integer,
+	BINNING integer,
+	EXPTIME float,
+	MJD float,
+	OBJ_RA float,
+	OBJ_DEC float,
+	RA float,
+	DEC float,
+	SET_TEMP float,
+	CCD_TEMP float,
+	FWHM float,
+	AIRMASS float,
+	ZMAG float,
+	PIERSIDE bool);
+	
+create table FILES(
+	ID integer primary key,
+	OBS_ID integer references OBSERVATIONS(ID),
+	NAME text,
+	PATH text,
+	DATE_ADDED DATE,
+	SIZE integer,
+	MD5 text
+	);
+	
+--*********************
+--Create trigger to update date for each insertion
+--*********************
+CREATE TRIGGER inserted_date AFTER INSERT ON FILES
+BEGIN
+        UPDATE FILES SET DATE_ADDED = DATETIME('NOW', 'LOCALTIME') WHERE rowid = new.rowid;
+END;
+
+
+create table GEO_LOCS(
+	ID integer primary key,
+	NAME text,
+	LAT float,
+	LONG float,
+	ALT float);
+	
+insert into GEO_LOCS(ID, NAME, LAT, LONG, ALT) 
+	values(0, 'New Mexico', 3.29027777778E+001, -1.05529444444E+002, 2.28600000000E+003);	
+	
+create table TARGETS(
+	ID integer primary key,
+	NAME text,
+	RA float,
+	DEC float);
+	
+insert into TARGETS(ID, RA, DEC, NAME) 
+	values(0, 'test', 0.0, 0.0);	
+	
+
+
+	
+create table PROGRAMS(
+	ID integer primary key,
+	PI_ID integer references PIS(ID) default 0,
+	NAME text,
+	DESCRIPTION text);
+
+insert into PROGRAMS(ID, NAME) values (0, 'default');
+
+create table PIS(
+	ID integer primary key,
+	NAME text,
+	AFILLIATION text);
+
+insert into PIS(ID, NAME) values (0, 'NA');
+
+
+create table OBSERVERS(
+	ID integer primary key,
+	NAME text,
+	AFILLIATION text);
+
+insert into OBSERVERS(ID, NAME) values (0, 'default');
+
+create table OBS_TYPES(
+	ID integer primary key,
+	NAME text);
+
+insert into OBS_TYPES(ID, NAME) values (0, 'bias');
+insert into OBS_TYPES(ID, NAME) values (1, 'dark');
+insert into OBS_TYPES(ID, NAME) values (2, 'flat');
+insert into OBS_TYPES(ID, NAME) values (3, 'science');
+
+create table FILTERS(
+	ID integer primary key,
+	NAME text,
+	RESPONSEFUNC text);
+	
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (-1, 'NA', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (0, 'clear', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (1, 'l', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (2, 'b', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (3, 'g', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (4, 'r', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (5, 'i', NULL);
+insert into FILTERS(id, NAME, RESPONSEFUNC) values (6, 'z', NULL);
+	
+	 
+
+create table OBJECTS(
+	ID integer primary key,
+	OBSERVATION_ID integer references OBSERVATIONS(ID),
+	X float,
+	XERR float,
+	Y float,
+	YERR float,
+	MAG float,
+	MAGERR float,
+	PARAM1 float,
+	PARAM1ERR float,
+	PARAM2 float,
+	PARAM2ERR float);

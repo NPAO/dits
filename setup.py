@@ -1,5 +1,4 @@
 #setup script for DIT software
-
 try:
     from setuptools import setup
 except ImportError:
